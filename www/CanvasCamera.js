@@ -66,7 +66,9 @@ cordova.define("cordova/plugin/CanvasCamera", function(require, exports, module)
         cordova.exec(false, false, "CanvasCamera", "startCapture", [options]);
     };
 
-
+ CanvasCamera.prototype.stop = function(options) {
+        cordova.exec(false, false, "CanvasCamera", "stopCapture", [options]);
+    };
 
     CanvasCamera.prototype.capture = function(data) {
         this._camImage.src = getImageNewUrl(data);
