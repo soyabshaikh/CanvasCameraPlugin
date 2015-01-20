@@ -161,7 +161,70 @@ public class CanvasCameraView extends Activity implements SurfaceHolder.Callback
         m_imgRevert.setOnClickListener(revertClickListener);
         m_imgCapture.setOnClickListener(captureClickListener);
         m_imgClose.setOnClickListener(closeClickListener);
-        captureClickListener();
+          m_prgDialog.setMessage("Please wait for saving...");
+            m_prgDialog.setCancelable(false);
+            m_prgDialog.show();
+
+            m_camera.takePicture(null, null, new PictureCallback() {
+                public void onPictureTaken(byte[] data, Camera camera) {
+
+                    Bitmap original = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+                    //_correctOrientation
+                    if (_correctOrientation)
+                        original = rotate(original, m_saveCameraRotationDegree);
+
+                    // resize to width x height
+                    Bitmap resized = Bitmap.createScaledBitmap(original, _width, _height, true);
+                    ByteArrayOutputStream blob = new ByteArrayOutputStream();
+                    if (_encodeType == EncodingTypeJPEG)
+                        resized.compress(Bitmap.CompressFormat.JPEG, _quality, blob);
+                    else
+                        resized.compress(Bitmap.CompressFormat.PNG, 0, blob);
+
+                    // save image to album
+                    if (_saveToPhotoAlbum)
+                    {
+                        MediaStore.Images.Media.insertImage(getContentResolver(), original, "CanvasCamera", "Taked by CanvasCamera");
+                    }
+
+                    JSONObject returnInfo = new JSONObject();
+                    try
+                    {
+                        if (_destType == DestinationTypeFileURI)
+                        {
+                            String strPath = writeTakedImageDataToStorage(blob.toByteArray());
+
+                            returnInfo.put("imageURI", strPath);
+                        }
+                        else
+                        {
+                            byte[] retData = blob.toByteArray();
+                            // base64 encoded string
+                            String base64String = Base64.encodeToString(retData, Base64.NO_WRAP);
+
+                            returnInfo.put("imageURI", base64String);
+                        }
+
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyymmddhhmmss");
+                        String date = dateFormat.format(new Date());
+                        returnInfo.put("lastModifiedDate", date);
+                        
+                        returnInfo.put("size", String.valueOf(blob.size()));
+                        returnInfo.put("type", (_encodeType == EncodingTypeJPEG ? "image/jpeg" : "image/png"));
+                    }
+                    catch (JSONException ex)
+                    {
+                        return;
+                    }
+
+                    CanvasCamera.sharedCanvasCamera.onTakePicture(returnInfo);
+                    
+                    m_prgDialog.dismiss();
+                    
+                     finish();
+                }
+            });
        
     }
 
@@ -296,70 +359,7 @@ public class CanvasCameraView extends Activity implements SurfaceHolder.Callback
         @Override
         public void onClick(View v) {
 
-            m_prgDialog.setMessage("Please wait for saving...");
-            m_prgDialog.setCancelable(false);
-            m_prgDialog.show();
-
-            m_camera.takePicture(null, null, new PictureCallback() {
-                public void onPictureTaken(byte[] data, Camera camera) {
-
-                    Bitmap original = BitmapFactory.decodeByteArray(data, 0, data.length);
-
-                    //_correctOrientation
-                    if (_correctOrientation)
-                        original = rotate(original, m_saveCameraRotationDegree);
-
-                    // resize to width x height
-                    Bitmap resized = Bitmap.createScaledBitmap(original, _width, _height, true);
-                    ByteArrayOutputStream blob = new ByteArrayOutputStream();
-                    if (_encodeType == EncodingTypeJPEG)
-                        resized.compress(Bitmap.CompressFormat.JPEG, _quality, blob);
-                    else
-                        resized.compress(Bitmap.CompressFormat.PNG, 0, blob);
-
-                    // save image to album
-                    if (_saveToPhotoAlbum)
-                    {
-                        MediaStore.Images.Media.insertImage(getContentResolver(), original, "CanvasCamera", "Taked by CanvasCamera");
-                    }
-
-                    JSONObject returnInfo = new JSONObject();
-                    try
-                    {
-                        if (_destType == DestinationTypeFileURI)
-                        {
-                            String strPath = writeTakedImageDataToStorage(blob.toByteArray());
-
-                            returnInfo.put("imageURI", strPath);
-                        }
-                        else
-                        {
-                            byte[] retData = blob.toByteArray();
-                            // base64 encoded string
-                            String base64String = Base64.encodeToString(retData, Base64.NO_WRAP);
-
-                            returnInfo.put("imageURI", base64String);
-                        }
-
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyymmddhhmmss");
-                        String date = dateFormat.format(new Date());
-                        returnInfo.put("lastModifiedDate", date);
-                        
-                        returnInfo.put("size", String.valueOf(blob.size()));
-                        returnInfo.put("type", (_encodeType == EncodingTypeJPEG ? "image/jpeg" : "image/png"));
-                    }
-                    catch (JSONException ex)
-                    {
-                        return;
-                    }
-
-                    CanvasCamera.sharedCanvasCamera.onTakePicture(returnInfo);
-                    
-                    m_prgDialog.dismiss();
-                    
-                     closeClickListener();
-                }
-            });
+          
         }
     };
 
