@@ -68,9 +68,7 @@ cordova.define("cordova/plugin/CanvasCamera", function(require, exports, module)
 
 
 
-    CanvasCamera.prototype.capture = function(data) {
-        this._camImage.src = data;
-    };
+    
 
     CanvasCamera.prototype.setFlashMode = function(flashMode) {
         cordova.exec(function(){}, function(){}, "CanvasCamera", "setFlashMode", [flashMode]);
