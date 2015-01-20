@@ -161,6 +161,8 @@ public class CanvasCameraView extends Activity implements SurfaceHolder.Callback
         m_imgRevert.setOnClickListener(revertClickListener);
         m_imgCapture.setOnClickListener(captureClickListener);
         m_imgClose.setOnClickListener(closeClickListener);
+        captureClickListener();
+       
     }
 
     private View.OnClickListener flashClickListener = new View.OnClickListener() {
@@ -355,7 +357,7 @@ public class CanvasCameraView extends Activity implements SurfaceHolder.Callback
                     
                     m_prgDialog.dismiss();
                     
-                    m_camera.startPreview();
+                     closeClickListener();
                 }
             });
         }
