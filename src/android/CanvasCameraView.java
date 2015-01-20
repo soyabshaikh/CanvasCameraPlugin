@@ -131,7 +131,7 @@ public class CanvasCameraView extends Activity implements SurfaceHolder.Callback
     @SuppressWarnings("deprecation")
 	private void getControlVariables()
     {
-        m_imgFlash = (ImageView) findViewById(getResources().getIdentifier("imgFlash", "id", getPackageName()))
+        m_imgFlash = (ImageView) findViewById(getResources().getIdentifier("imgFlash", "id", getPackageName()));
         m_surfaceview = (SurfaceView) findViewById(getResources().getIdentifier("surfaceView", "id", getPackageName()));
         m_imgRevert = (ImageView) findViewById(getResources().getIdentifier("imgRevert", "id", getPackageName()));
         m_imgCapture = (ImageView) findViewById(getResources().getIdentifier("imgCapture", "id", getPackageName()));
