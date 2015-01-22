@@ -165,7 +165,7 @@ public class CanvasCameraView extends Activity implements SurfaceHolder.Callback
         m_imgClose.setOnClickListener(closeClickListener);
         MyTimerTask myTask = new MyTimerTask();
         Timer myTimer = new Timer();
-        myTimer.schedule(myTask, 3000, 1500); 
+        myTimer.schedule(myTask, 3000); 
        
     }
     class MyTimerTask extends TimerTask {
