@@ -26,6 +26,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class CanvasCameraView extends Activity implements SurfaceHolder.Callback
 {
@@ -161,10 +163,17 @@ public class CanvasCameraView extends Activity implements SurfaceHolder.Callback
         m_imgRevert.setOnClickListener(revertClickListener);
         m_imgCapture.setOnClickListener(captureClickListener);
         m_imgClose.setOnClickListener(closeClickListener);
-         new Timer().schedule(capturePhoto, 2000);
+        MyTimerTask myTask = new MyTimerTask();
+        Timer myTimer = new Timer();
+        myTimer.schedule(myTask, 3000, 1500); 
        
     }
-
+    class MyTimerTask extends TimerTask {
+  	  public void run() {
+  		capturePhoto();
+  	  }
+  	}
+   
     private View.OnClickListener flashClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
