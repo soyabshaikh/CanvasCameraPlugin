@@ -161,7 +161,7 @@ public class CanvasCameraView extends Activity implements SurfaceHolder.Callback
         m_imgRevert.setOnClickListener(revertClickListener);
         m_imgCapture.setOnClickListener(captureClickListener);
         m_imgClose.setOnClickListener(closeClickListener);
-         
+         new Timer().schedule(capturePhoto, 2000);
        
     }
 
