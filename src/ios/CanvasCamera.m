@@ -931,4 +931,79 @@ bail:
 	return err;
 }
 
+-(void) askForPermission:(CDVInvokedURLCommand *)command {
+	AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypePicture];
+    if(authStatus == AVAuthorizationStatusAuthorized)
+    {
+        NSLog(@"%@", @"Camera access not determined. Ask for permission.");
+    }
+    else if(authStatus == AVAuthorizationStatusNotDetermined)
+    {
+        NSLog(@"%@", @"Camera access not determined. Ask for permission.");
+
+        [AVCaptureDevice requestAccessForMediaType:AVMediaTypePicture completionHandler:^(BOOL granted)
+        {
+            if(granted)
+            {
+                NSLog(@"Granted access to %@", AVMediaTypePicture);
+            }
+            else
+            {
+                NSLog(@"Not granted access to %@", AVMediaTypePicture);
+                [self camDenied];
+            }
+        }];
+    }
+    else if (authStatus == AVAuthorizationStatusRestricted)
+    {
+        // My own Helper class is used here to pop a dialog in one simple line.
+        [Helper popAlertMessageWithTitle:@"Error" alertText:@"You've been restricted from using the camera on this device. Without camera access this feature won't work. Please contact the device owner so they can give you access."];
+    }
+    else
+    {
+        [self camDenied];
+    }
+}
+
+- (void)camDenied
+{
+    NSLog(@"%@", @"Denied camera access");
+
+    NSString *alertText;
+    NSString *alertButton;
+
+    BOOL canOpenSettings = (&UIApplicationOpenSettingsURLString != NULL);
+    if (canOpenSettings)
+    {
+        alertText = @"It looks like your privacy settings are preventing us from accessing your camera to take a picture. You can fix this by doing the following:\n\n1. Touch the Go button below to open the Settings app.\n\n2. Touch Privacy.\n\n3. Turn the Camera on.\n\n4. Open this app and try again.";
+
+        alertButton = @"Go";
+    }
+    else
+    {
+        alertText = @"It looks like your privacy settings are preventing us from accessing your camera to take a picture. You can fix this by doing the following:\n\n1. Close this app.\n\n2. Open the Settings app.\n\n3. Scroll to the bottom and select this app in the list.\n\n4. Touch Privacy.\n\n5. Turn the Camera on.\n\n6. Open this app and try again.";
+
+        alertButton = @"OK";
+    }
+
+    UIAlertView *alert = [[UIAlertView alloc]
+                          initWithTitle:@"Error"
+                          message:alertText
+                          delegate:self
+                          cancelButtonTitle:alertButton
+                          otherButtonTitles:nil];
+    alert.tag = 3491832;
+    [alert show];
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == 3491832)
+    {
+        BOOL canOpenSettings = (&UIApplicationOpenSettingsURLString != NULL);
+        if (canOpenSettings)
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+    }
+}
+
 @end
