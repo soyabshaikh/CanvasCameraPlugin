@@ -22,7 +22,10 @@ cordova.define("cordova/plugin/CanvasCamera", function(require, exports, module)
 
 
 
-
+   CanvasCamera.prototype.askForPermission = function() {
+               cordova.exec(false, false, "CanvasCamera", "askForPermission", []);
+   };
+               
     CanvasCamera.prototype.initialize = function(obj) {
         var _this = this;
         this._obj = obj;

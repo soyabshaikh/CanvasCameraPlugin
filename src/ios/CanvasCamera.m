@@ -931,25 +931,25 @@ bail:
 	return err;
 }
 
--(void) askForPermission:(CDVInvokedURLCommand *)command {
-	AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypePicture];
+-(void) askForPermission:(CDVInvokedUrlCommand *)command {
+	AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
     if(authStatus == AVAuthorizationStatusAuthorized)
     {
-        NSLog(@"%@", @"Camera access not determined. Ask for permission.");
+        NSLog(@"%@", @"Camera access authorized. Ask for permission.");
     }
     else if(authStatus == AVAuthorizationStatusNotDetermined)
     {
         NSLog(@"%@", @"Camera access not determined. Ask for permission.");
 
-        [AVCaptureDevice requestAccessForMediaType:AVMediaTypePicture completionHandler:^(BOOL granted)
+        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted)
         {
             if(granted)
             {
-                NSLog(@"Granted access to %@", AVMediaTypePicture);
+                NSLog(@"Granted access to %@", AVMediaTypeVideo);
             }
             else
             {
-                NSLog(@"Not granted access to %@", AVMediaTypePicture);
+                NSLog(@"Not granted access to %@", AVMediaTypeVideo);
                 [self camDenied];
             }
         }];
@@ -957,7 +957,14 @@ bail:
     else if (authStatus == AVAuthorizationStatusRestricted)
     {
         // My own Helper class is used here to pop a dialog in one simple line.
-        [Helper popAlertMessageWithTitle:@"Error" alertText:@"You've been restricted from using the camera on this device. Without camera access this feature won't work. Please contact the device owner so they can give you access."];
+        NSString *alertText = @"You've been restricted from using the camera on this device. Without camera access this feature won't work. Please contact the device owner so they can give you access.";
+        UIAlertView *alert = [[UIAlertView alloc]
+                              initWithTitle:@"Error"
+                              message:alertText
+                              delegate:self
+                              cancelButtonTitle:@"Ok"
+                              otherButtonTitles:nil];
+        [alert show];
     }
     else
     {
@@ -987,7 +994,7 @@ bail:
     }
 
     UIAlertView *alert = [[UIAlertView alloc]
-                          initWithTitle:@"Error"
+                          initWithTitle:@"Error in Accessing the Camera"
                           message:alertText
                           delegate:self
                           cancelButtonTitle:alertButton
