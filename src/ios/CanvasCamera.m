@@ -935,7 +935,7 @@ bail:
 	AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
     if(authStatus == AVAuthorizationStatusAuthorized)
     {
-        NSLog(@"%@", @"Camera access authorized. Ask for permission.");
+        NSLog(@"%@", @"Camera access authorized.");
     }
     else if(authStatus == AVAuthorizationStatusNotDetermined)
     {
