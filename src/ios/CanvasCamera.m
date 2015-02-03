@@ -384,19 +384,19 @@ typedef enum {
                ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
                [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
                    if (error) {
-                       [self.commandDelegate runInBackground:^{
+                       //[self.commandDelegate runInBackground:^{
                            //[self displayErrorOnMainQueue:error withMessage:@"Save to camera roll failed"];
                            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[NSString stringWithFormat:@"Writing data to asset failed :%@", [error localizedDescription]]];
                            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-                       }];
+                       //}];
                    }
                    else
                    {
-                       [self.commandDelegate runInBackground:^{
+                       //[self.commandDelegate runInBackground:^{
                            // success callback
                            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@""];
                            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-                       }];
+                      // }];
                    }
                }];
                
@@ -468,19 +468,19 @@ typedef enum {
                    
                    if (bRet == NO)
                    {
-                       [self.commandDelegate runInBackground:^{
+                       //[self.commandDelegate runInBackground:^{
                            //[self displayErrorOnMainQueue:error withMessage:@"Save to camera roll failed"];
                            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[NSString stringWithFormat:@"Writing data failed"]];
                            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-                       }];
+                      // }];
                    }
                    else
                    {
-                       [self.commandDelegate runInBackground:^{
+                       //[self.commandDelegate runInBackground:^{
                            // success callback
                            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:dicRet];
                            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-                       }];
+                       //}];
                    }
                    
                });
